@@ -2,6 +2,25 @@
 TODO
 
 
+
+
+-- DAQ required, at least one
+
+--default header file not required
+
+--raw data to volts default to 1
+
+--weight is not capitalized
+
+--tasks above associated file
+
+--electrode group, user can define count
+
+documentation for user
+
+
+====
+
 - file save pop up
 - spceies should be drop dow
 - gender missing

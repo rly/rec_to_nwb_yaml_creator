@@ -199,6 +199,15 @@ a:hover {
   background-color: darkgrey;
 }
 
+.array-update-area .multi-area {
+  border: 1px solid black;
+  padding: 0 2px 0 6px;
+}
+
+.array-update-area .multi-area input {
+  width: 45px;
+}
+
 .array-update-area button:hover {
   transform: scale(1.05);
   opacity: 1;

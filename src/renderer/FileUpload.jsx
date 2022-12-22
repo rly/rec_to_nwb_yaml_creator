@@ -66,8 +66,12 @@ FileUpload.propType = {
   placeholder: PropTypes.string,
   dataFormat: PropTypes.string,
   fileObjectId: PropTypes.string.isRequired,
-  metatData: PropTypes.instanceOf(Object),
+  metaData: PropTypes.instanceOf(Object),
   onInput: PropTypes.func.isRequired,
+};
+
+FileUpload.defaultProps = {
+  required: false,
 };
 
 export default FileUpload;

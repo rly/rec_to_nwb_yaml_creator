@@ -13,6 +13,8 @@ import {
   ASYNC_TOPICS,
   commaSeparatedStringToNumber,
   sanitizeTitle,
+  titleCase,
+  showCustomValidityError,
 } from './utils';
 import {
   labs,
@@ -48,7 +50,7 @@ export function YMLGenerator() {
       sex: 'Male',
       species: 'Long-Evans Rat',
       subject_id: '',
-      weight: 0,
+      weight: '',
     },
     data_acq_device: [],
     associated_files: [],
@@ -56,8 +58,8 @@ export function YMLGenerator() {
       analog: '',
       behavioral_events: '',
     },
-    times_period_multiplier: 0,
-    raw_data_to_volts: 0,
+    times_period_multiplier: 1.0,
+    raw_data_to_volts: 1.0,
     default_header_file_path: '',
     cameras: [],
     tasks: [],
@@ -166,7 +168,7 @@ export function YMLGenerator() {
     );
 
     nTrodes.forEach((n, nIndex) => {
-      n.ntrode_id = nIndex + 1;
+      n.ntrode_id = nIndex + 1 + electrodeGroupId;
       n.electrode_group_id = electrodeGroupId;
       n.map = { ...map };
     });
@@ -187,20 +189,33 @@ export function YMLGenerator() {
     return null;
   };
 
-  const addArrayItem = (key) => {
+  const addArrayItem = (key, count = 1) => {
     const form = structuredClone(formData);
-    const items = { ...arrayDefaultValues[key] };
+    const arrayDefaultValue = arrayDefaultValues[key];
+    const items = Array(count).fill({ ...arrayDefaultValue });
     const formItems = form[key];
     const idValues = formItems
       .map((formItem) => formItem.id)
       .filter((formItem) => formItem !== undefined);
+    // -1 means no id field, else there it exist and get max
+    let maxId = -1;
 
-    // prevent duplicate ids
-    if (idValues.length > 0) {
-      items.id = Math.max(...idValues) + 1;
+    if (arrayDefaultValue.id !== undefined) {
+      maxId = idValues.length > 0 ? Math.max(...idValues) + 1 : 0;
     }
 
-    formItems.push(items);
+    items.forEach((item) => {
+      const selectedItem = { ...item }; // best never to directly alter iterator
+
+      // if id exist, increment to avoid duplicates
+      if (maxId !== -1) {
+        maxId += 1;
+        selectedItem.id = maxId - 1; // -1 makes this start from 0
+      }
+
+      formItems.push(selectedItem);
+    });
+
     setFormData(form);
   };
 
@@ -211,6 +226,12 @@ export function YMLGenerator() {
     setFormData(form);
   };
 
+  /**
+   * Displays an error message to the user if Ajv fails validation
+   *
+   * @param {object} error Ajv's error object
+   * @returns
+   */
   const showErrorMessage = (error) => {
     const { message, instancePath } = error;
     const idComponents = error.instancePath.split('/').filter((e) => e !== '');
@@ -235,18 +256,24 @@ export function YMLGenerator() {
 
     const userFriendlyMessage = sanitizeMessage(message);
 
-    if (!element) {
-      // eslint-disable-next-line no-alert
-      window.alert(userFriendlyMessage);
+    // setCustomValidity is only supported on input tags
+    if (element.tagName === 'INPUT') {
+      showCustomValidityError(element, userFriendlyMessage);
       return;
     }
 
-    element.setCustomValidity(userFriendlyMessage);
-    element.reportValidity();
+    if (element && element.focus) {
+      element.focus();
+    }
 
-    setTimeout(() => {
-      element.setCustomValidity('');
-    }, 2000);
+    // If here, element not found or cannot show validation message with
+    // setCustomValidity/reportValidity; so show a pop-up message
+    const itemName = titleCase(
+      instancePath.replaceAll('/', '').replaceAll('_', ' ')
+    );
+
+    // eslint-disable-next-line no-alert
+    window.alert(`${itemName} - ${userFriendlyMessage}`);
   };
 
   const validateJSON = (formContent) => {
@@ -394,7 +421,7 @@ export function YMLGenerator() {
           type="text"
           name="experiment_description"
           title="Experiment Description"
-          placeholder="Desscription of experiment"
+          placeholder="Description of experiment"
           defaultValue={formData.experiment_description}
           onInput={(e) => onInput(e)}
         />
@@ -462,7 +489,7 @@ export function YMLGenerator() {
                 id="subject-weight"
                 type="number"
                 name="weight"
-                title="weight"
+                title="Weight"
                 required
                 defaultValue={formData.subject.weight}
                 placeholder="Mass of animal model/patient in grams"
@@ -472,7 +499,7 @@ export function YMLGenerator() {
           </fieldset>
         </div>
 
-        <div>
+        <div id="data_acq_device">
           <fieldset>
             <legend>Data Acq Device</legend>
             <div>
@@ -491,7 +518,7 @@ export function YMLGenerator() {
                     >
                       <InputElement
                         id={`data_acq_device-name-${index}`}
-                        type="string"
+                        type="text"
                         name="name"
                         title="Name"
                         required
@@ -506,7 +533,7 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`data_acq_device-system-${index}`}
-                        type="string"
+                        type="text"
                         name="system"
                         title="System"
                         required
@@ -521,7 +548,7 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`data_acq_device-amplifier-${index}`}
-                        type="string"
+                        type="text"
                         name="amplifier"
                         title="Amplifier"
                         required
@@ -536,7 +563,7 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`data_acq_device-adc_circuit-${index}`}
-                        type="string"
+                        type="text"
                         name="adc_circuit"
                         title="ADC circuit"
                         required
@@ -557,6 +584,113 @@ export function YMLGenerator() {
             <ArrayUpdateMenu
               itemsKey="data_acq_device"
               items={formData.data_acq_device}
+              addArrayItem={addArrayItem}
+              removeArrayItem={removeArrayItem}
+            />
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset>
+            <legend>Tasks</legend>
+            <div className="form-container">
+              {formData.tasks.map((tasks, index) => {
+                const key = 'tasks';
+
+                return (
+                  <fieldset
+                    key={sanitizeTitle(`${tasks.task_name}-ts-${index}`)}
+                    className="array-item"
+                  >
+                    <legend> Item #{index + 1} </legend>
+                    <div className="form-container">
+                      <InputElement
+                        id={`tasks-task_name-${index}`}
+                        type="text"
+                        name="task_name"
+                        title="Task Name"
+                        required
+                        defaultValue={tasks.task_name}
+                        placeholder="Task Name"
+                        onInput={(e) =>
+                          onInput(e, {
+                            key,
+                            index,
+                          })
+                        }
+                      />
+                      <InputElement
+                        id={`tasks-task_description-${index}`}
+                        type="text"
+                        name="task_description"
+                        title="Task Description"
+                        required
+                        defaultValue={tasks.task_description}
+                        placeholder="Task Description"
+                        onInput={(e) =>
+                          onInput(e, {
+                            key,
+                            index,
+                          })
+                        }
+                      />
+                      <InputElement
+                        id={`tasks-task_environment-${index}`}
+                        type="text"
+                        name="task_environment"
+                        title="Task Environment"
+                        defaultValue={tasks.task_environment}
+                        placeholder="Task Environment"
+                        onInput={(e) =>
+                          onInput(e, {
+                            key,
+                            index,
+                          })
+                        }
+                      />
+                      <CheckboxList
+                        id={`tasks-camera_id-${index}`}
+                        type="number"
+                        name="camera_id"
+                        title="Camera Id"
+                        objectKind="Camera"
+                        required
+                        defaultValue={tasks.camera_id}
+                        placeholder="Camera ids"
+                        dataItems={cameraIdsDefined}
+                        updateFormData={updateFormData}
+                        metaData={{
+                          nameValue: 'camera_id',
+                          keyValue: 'tasks',
+                          index,
+                        }}
+                        onChange={updateFormData}
+                      />
+
+                      <InputElement
+                        id={`tasks-task_epochs-${index}`}
+                        type="text"
+                        name="task_epochs"
+                        title="Task Epochs"
+                        required
+                        defaultValue={tasks.task_epochs}
+                        placeholder="Task Epochs"
+                        onInput={(e) =>
+                          onInput(e, {
+                            key,
+                            index,
+                            isCommaSeparatedStringToNumber: true,
+                          })
+                        }
+                      />
+                    </div>
+                  </fieldset>
+                );
+              })}
+            </div>
+            <ArrayUpdateMenu
+              itemsKey="tasks"
+              items={formData.tasks}
               addArrayItem={addArrayItem}
               removeArrayItem={removeArrayItem}
             />
@@ -730,7 +864,7 @@ export function YMLGenerator() {
                     <div className="form-container">
                       <InputElement
                         id={`cameras-id-${index}`}
-                        type="string"
+                        type="number"
                         name="id"
                         title="Id"
                         required
@@ -760,11 +894,10 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`cameras-manufacturer-${index}`}
-                        type="string"
+                        type="text"
                         name="manufacturer"
                         title="Manufacturer"
                         defaultValue={cameras.manufacturer}
-                        required
                         placeholder="Manufacturer"
                         onInput={(e) =>
                           onInput(e, {
@@ -775,11 +908,10 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`cameras-model-${index}`}
-                        type="string"
+                        type="text"
                         name="model"
                         title="model"
                         defaultValue={cameras.model}
-                        required
                         placeholder="model"
                         onInput={(e) =>
                           onInput(e, {
@@ -790,11 +922,10 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`cameras-lens-${index}`}
-                        type="string"
+                        type="text"
                         name="lens"
                         title="lens"
                         defaultValue={cameras.lens}
-                        required
                         placeholder="Lens"
                         onInput={(e) =>
                           onInput(e, {
@@ -805,10 +936,9 @@ export function YMLGenerator() {
                       />{' '}
                       <InputElement
                         id={`cameras-cameraname-${index}`}
-                        type="string"
+                        type="text"
                         name="camera_name"
                         title="Camera Name"
-                        required
                         defaultValue={cameras.camera_name}
                         placeholder="Camera Name"
                         onInput={(e) =>
@@ -834,114 +964,6 @@ export function YMLGenerator() {
 
         <div>
           <fieldset>
-            <legend>Tasks</legend>
-            <div className="form-container">
-              {formData.tasks.map((tasks, index) => {
-                const key = 'tasks';
-
-                return (
-                  <fieldset
-                    key={sanitizeTitle(`${tasks.task_name}-ts-${index}`)}
-                    className="array-item"
-                  >
-                    <legend> Item #{index + 1} </legend>
-                    <div className="form-container">
-                      <InputElement
-                        id={`tasks-task_name-${index}`}
-                        type="string"
-                        name="task_name"
-                        title="Task Name"
-                        required
-                        defaultValue={tasks.task_name}
-                        placeholder="Task Name"
-                        onInput={(e) =>
-                          onInput(e, {
-                            key,
-                            index,
-                          })
-                        }
-                      />
-                      <InputElement
-                        id={`tasks-task_description-${index}`}
-                        type="string"
-                        name="task_description"
-                        title="Task Description"
-                        required
-                        defaultValue={tasks.task_description}
-                        placeholder="Task Description"
-                        onInput={(e) =>
-                          onInput(e, {
-                            key,
-                            index,
-                          })
-                        }
-                      />
-                      <InputElement
-                        id={`tasks-task_environment-${index}`}
-                        type="string"
-                        name="task_environment"
-                        title="Task Environment"
-                        required
-                        defaultValue={tasks.task_environment}
-                        placeholder="Task Environment"
-                        onInput={(e) =>
-                          onInput(e, {
-                            key,
-                            index,
-                          })
-                        }
-                      />
-                      <CheckboxList
-                        id={`tasks-camera_id-${index}`}
-                        type="number"
-                        name="camera_id"
-                        title="Camera Id"
-                        objectKind="Camera"
-                        required
-                        defaultValue={tasks.camera_id}
-                        placeholder="Camera ids"
-                        dataItems={cameraIdsDefined}
-                        updateFormData={updateFormData}
-                        metaData={{
-                          nameValue: 'camera_id',
-                          keyValue: 'tasks',
-                          index,
-                        }}
-                        onChange={updateFormData}
-                      />
-
-                      <InputElement
-                        id={`tasks-task_epochs-${index}`}
-                        type="string"
-                        name="task_epochs"
-                        title="Task Epochs"
-                        required
-                        defaultValue={tasks.task_epochs}
-                        placeholder="Task Epochs"
-                        onInput={(e) =>
-                          onInput(e, {
-                            key,
-                            index,
-                            isCommaSeparatedStringToNumber: true,
-                          })
-                        }
-                      />
-                    </div>
-                  </fieldset>
-                );
-              })}
-            </div>
-            <ArrayUpdateMenu
-              itemsKey="tasks"
-              items={formData.tasks}
-              addArrayItem={addArrayItem}
-              removeArrayItem={removeArrayItem}
-            />
-          </fieldset>
-        </div>
-
-        <div>
-          <fieldset>
             <legend>Associated Video Files</legend>
             <div className="form-container">
               {formData.associated_video_files.map(
@@ -958,7 +980,7 @@ export function YMLGenerator() {
                       <div className="form-container">
                         <InputElement
                           id={`associated_video_files-name-${index}`}
-                          type="string"
+                          type="text"
                           name="name"
                           title="Name"
                           required
@@ -1123,7 +1145,7 @@ export function YMLGenerator() {
                       />
                       <InputElement
                         id={`electrode_groups-description-${index}`}
-                        type="string"
+                        type="text"
                         name="description"
                         title="Description"
                         required
@@ -1232,6 +1254,7 @@ export function YMLGenerator() {
             </div>
             <ArrayUpdateMenu
               itemsKey="electrode_groups"
+              allowMultiple
               items={formData.electrode_groups}
               addArrayItem={addArrayItem}
               removeArrayItem={removeArrayItem}

@@ -433,6 +433,7 @@
       "$id": "#root/data_acq_device",
       "title": "data_acq_device",
       "type": "array",
+      "minItems": 1,
       "default": [],
       "items": {
         "$id": "#root/data_acq_device/items",

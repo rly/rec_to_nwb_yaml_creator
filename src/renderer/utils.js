@@ -13,6 +13,19 @@ export const isInteger = (value) => {
 };
 
 /**
+ * Converts a string to title case
+ *
+ * @param {string} str Makes text title case
+ * @returns Text in title case
+ */
+export const titleCase = (str) => {
+  // based on https://stackoverflow.com/a/196991/178550
+  return str.replace(/\w\S*/g, (txt) => {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
+
+/**
  * Converts a comma-separated string into an array
  *
  * @param {string} stringSet A string with comma-separated numbers
@@ -30,6 +43,27 @@ export const commaSeparatedStringToNumber = (stringSet) => {
         .map((number) => parseInt(number, 10))
     ),
   ];
+};
+
+/**
+ * Displays an error message in input tag. It does nothing if the tag in not input
+ *
+ * @param {element} element Javascript element
+ * @param {*} message Message to show
+ *
+ * @returns undefined
+ */
+export const showCustomValidityError = (element, message) => {
+  if (!element || element.tagName !== 'INPUT') {
+    return;
+  }
+
+  element.setCustomValidity(message);
+  element.reportValidity();
+
+  setTimeout(() => {
+    element.setCustomValidity('');
+  }, 2000);
 };
 
 /**
