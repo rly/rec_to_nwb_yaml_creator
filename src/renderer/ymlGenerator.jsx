@@ -50,7 +50,7 @@ export function YMLGenerator() {
       sex: 'Male',
       species: 'Long-Evans Rat',
       subject_id: '',
-      weight: '',
+      weight: 0,
     },
     data_acq_device: [],
     associated_files: [],
@@ -97,7 +97,7 @@ export function YMLGenerator() {
     setFormData(form);
   };
 
-  const onInput = (e, metaData) => {
+  const onBlur = (e, metaData) => {
     const { target } = e;
     const { name, value, type } = target;
     const { key, index, isCommaSeparatedStringToNumber } = metaData || {};
@@ -395,7 +395,7 @@ export function YMLGenerator() {
             title="Experimenter Name"
             placeholder="Name of experimenter performing current session"
             required
-            onInput={(e) => onInput(e)}
+            onBlur={(e) => onBlur(e)}
           />
           <InputElement
             id="lab"
@@ -405,7 +405,7 @@ export function YMLGenerator() {
             defaultValue={formData.lab}
             placeholder="Laboratory where the experiment is conducted"
             required
-            onInput={(e) => onInput(e)}
+            onBlur={(e) => onBlur(e)}
           />
           <DataListElement
             id="institution"
@@ -423,7 +423,7 @@ export function YMLGenerator() {
           title="Experiment Description"
           placeholder="Description of experiment"
           defaultValue={formData.experiment_description}
-          onInput={(e) => onInput(e)}
+          onBlur={(e) => onBlur(e)}
         />
         <InputElement
           id="session_description"
@@ -432,7 +432,7 @@ export function YMLGenerator() {
           title="Session Description"
           placeholder="Desscription of current session"
           defaultValue={formData.session_description}
-          onInput={(e) => onInput(e)}
+          onBlur={(e) => onBlur(e)}
         />
 
         <div>
@@ -447,7 +447,7 @@ export function YMLGenerator() {
                 defaultValue={formData.subject.description}
                 required
                 placeholder="Summary of animal model/patient/specimen being examined"
-                onInput={(e) => onInput(e, { key: 'subject' })}
+                onBlur={(e) => onBlur(e, { key: 'subject' })}
               />
               <InputElement
                 id="subject-genotype"
@@ -457,7 +457,7 @@ export function YMLGenerator() {
                 required
                 defaultValue={formData.subject.genotype}
                 placeholder="Genetic summary of animal model/patient/specimen"
-                onInput={(e) => onInput(e, { key: 'subject' })}
+                onBlur={(e) => onBlur(e, { key: 'subject' })}
               />
               <SelectElement
                 id="subject-sex"
@@ -483,7 +483,7 @@ export function YMLGenerator() {
                 required
                 defaultValue={formData.subject.subject_id}
                 placeholder="Identification code/number of animal model/patient"
-                onInput={(e) => onInput(e, { key: 'subject' })}
+                onBlur={(e) => onBlur(e, { key: 'subject' })}
               />
               <InputElement
                 id="subject-weight"
@@ -493,7 +493,7 @@ export function YMLGenerator() {
                 required
                 defaultValue={formData.subject.weight}
                 placeholder="Mass of animal model/patient in grams"
-                onInput={(e) => onInput(e, { key: 'subject' })}
+                onBlur={(e) => onBlur(e, { key: 'subject' })}
               />
             </div>
           </fieldset>
@@ -524,8 +524,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={dataAcqDevice.name}
                         placeholder="name"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -539,8 +539,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={dataAcqDevice.system}
                         placeholder="system"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -554,8 +554,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={dataAcqDevice.amplifier}
                         placeholder="amplifier"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -569,8 +569,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={dataAcqDevice.adc_circuit}
                         placeholder="adc circuit"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -612,8 +612,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={tasks.task_name}
                         placeholder="Task Name"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -627,8 +627,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={tasks.task_description}
                         placeholder="Task Description"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -641,8 +641,8 @@ export function YMLGenerator() {
                         title="Task Environment"
                         defaultValue={tasks.task_environment}
                         placeholder="Task Environment"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -675,8 +675,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={tasks.task_epochs}
                         placeholder="Task Epochs"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                             isCommaSeparatedStringToNumber: true,
@@ -721,8 +721,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={associatedFilesName.name}
                         placeholder="File name"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -736,8 +736,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={associatedFilesName.description}
                         placeholder="description"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -754,12 +754,12 @@ export function YMLGenerator() {
                           index,
                         }}
                         onTextFieldInput={(e) =>
-                          onInput(e, {
+                          onBlur(e, {
                             key,
                             index,
                           })
                         }
-                        onInput={itemFileUpload}
+                        onBlur={itemFileUpload}
                       />
                       <CheckboxList
                         id={`associated_files-taskEpochs-${index}`}
@@ -804,7 +804,7 @@ export function YMLGenerator() {
                 title="Analog"
                 placeholder="Analog"
                 defaultValue={formData.units.analog}
-                onInput={(e) => onInput(e, { key: 'units' })}
+                onBlur={(e) => onBlur(e, { key: 'units' })}
               />
               <InputElement
                 id="behavioralEvents"
@@ -813,7 +813,7 @@ export function YMLGenerator() {
                 title="Behavioral Events"
                 placeholder="Behavioral Events"
                 defaultValue={formData.units.behavioral_events}
-                onInput={(e) => onInput(e, { key: 'units' })}
+                onBlur={(e) => onBlur(e, { key: 'units' })}
               />
             </div>
           </fieldset>
@@ -826,7 +826,7 @@ export function YMLGenerator() {
           title="Times Period Multiplier"
           placeholder="Times Period Multiplier"
           defaultValue={formData.times_period_multiplier}
-          onInput={(e) => onInput(e)}
+          onBlur={(e) => onBlur(e)}
         />
 
         <InputElement
@@ -836,7 +836,7 @@ export function YMLGenerator() {
           title="Raw Data to Volts"
           placeholder="raw data to volts"
           defaultValue={formData.raw_data_to_volts}
-          onInput={(e) => onInput(e)}
+          onBlur={(e) => onBlur(e)}
         />
 
         <FileUpload
@@ -844,9 +844,9 @@ export function YMLGenerator() {
           title="Default Header File Path"
           name="default_header_file_path"
           placeholder="Default Header File Path"
-          onTextFieldInput={(e) => onInput(e)}
+          onTextFieldInput={(e) => onBlur(e)}
           defaultValue={formData.default_header_file_path}
-          onInput={itemFileUpload}
+          onBlur={itemFileUpload}
         />
 
         <div>
@@ -870,8 +870,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={cameras.id}
                         placeholder="Id"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -885,8 +885,8 @@ export function YMLGenerator() {
                         defaultValue={cameras.meters_per_pixel}
                         required
                         placeholder="Meters Per Pixel"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             indexCount: index,
                           })
@@ -899,8 +899,8 @@ export function YMLGenerator() {
                         title="Manufacturer"
                         defaultValue={cameras.manufacturer}
                         placeholder="Manufacturer"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -913,8 +913,8 @@ export function YMLGenerator() {
                         title="model"
                         defaultValue={cameras.model}
                         placeholder="model"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -927,8 +927,8 @@ export function YMLGenerator() {
                         title="lens"
                         defaultValue={cameras.lens}
                         placeholder="Lens"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -941,8 +941,8 @@ export function YMLGenerator() {
                         title="Camera Name"
                         defaultValue={cameras.camera_name}
                         placeholder="Camera Name"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -986,8 +986,8 @@ export function YMLGenerator() {
                           required
                           defaultValue={associatedVideoFiles.name}
                           placeholder="name"
-                          onInput={(e) =>
-                            onInput(e, {
+                          onBlur={(e) =>
+                            onBlur(e, {
                               key,
                               index,
                             })
@@ -1048,7 +1048,7 @@ export function YMLGenerator() {
                           key,
                           index,
                         }}
-                        onInput={onInput}
+                        onBlur={onBlur}
                       />
                       <DataListElement
                         id={`behavioral_events-name-${index}`}
@@ -1110,8 +1110,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={electrodeGroup.id}
                         placeholder="Id"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -1151,8 +1151,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={electrodeGroup.description}
                         placeholder="Description"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -1179,8 +1179,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={electrodeGroup.targeted_x}
                         placeholder="Targeted x"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -1194,8 +1194,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={electrodeGroup.targeted_y}
                         placeholder="Targeted y"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -1209,8 +1209,8 @@ export function YMLGenerator() {
                         required
                         defaultValue={electrodeGroup.targeted_z}
                         placeholder="Targeted z"
-                        onInput={(e) =>
-                          onInput(e, {
+                        onBlur={(e) =>
+                          onBlur(e, {
                             key,
                             index,
                           })
@@ -1237,8 +1237,8 @@ export function YMLGenerator() {
                           electrodeGroupId={electrodeGroupId}
                           nTrodeItems={nTrodeItems}
                           updateFormData={updateFormData}
-                          onInput={(e) =>
-                            onInput(e, {
+                          onBlur={(e) =>
+                            onBlur(e, {
                               key: 'ntrode_electrode_group_channel_map',
                               name: 'map',
                               index,

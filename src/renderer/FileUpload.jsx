@@ -16,7 +16,7 @@ const FileUpload = (fileProperty) => {
     placeholder,
     id,
     onTextFieldInput,
-    onInput,
+    onBlur,
     metaData,
   } = fileProperty;
   const fileInputElement = useRef(null);
@@ -27,7 +27,7 @@ const FileUpload = (fileProperty) => {
       fileElement && fileElement.length > 0 ? fileElement[0].path : '';
 
     fileInputElement.current.value = filePath;
-    onInput(e, filePath, metaData);
+    onBlur(e, filePath, metaData);
   };
 
   return (
@@ -43,14 +43,14 @@ const FileUpload = (fileProperty) => {
           name={name}
           required={required}
           placeholder={placeholder}
-          onInput={(e) => onTextFieldInput(e)}
+          onBlur={(e) => onTextFieldInput(e)}
         />
         <input
           type="file"
           id={`${id}-file`}
           ref={fileObject}
           name={name}
-          onInput={onNewFileSelected}
+          onBlur={onNewFileSelected}
         />
       </div>
     </div>
@@ -67,7 +67,7 @@ FileUpload.propType = {
   dataFormat: PropTypes.string,
   fileObjectId: PropTypes.string.isRequired,
   metaData: PropTypes.instanceOf(Object),
-  onInput: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
 };
 
 FileUpload.defaultProps = {

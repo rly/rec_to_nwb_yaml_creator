@@ -12,7 +12,7 @@ import { sanitizeTitle } from './utils';
  * @returns Virtual DOM of the map for ntrode_electrode_group_channel_map
  */
 const ChannelMap = (prop) => {
-  const { nTrodeItems, onInput, onMapInput, electrodeGroupId, updateFormData } =
+  const { nTrodeItems, onBlur, onMapInput, electrodeGroupId, updateFormData } =
     prop;
 
   return (
@@ -42,7 +42,7 @@ const ChannelMap = (prop) => {
                     required
                     defaultValue={item.ntrode_id}
                     placeholder="Ntrode Id"
-                    onInput={onInput}
+                    onBlur={onBlur}
                   />
                   <CheckboxList
                     id={`ntrode_electrode_group_channel_map-bad_channels-${index}`}
@@ -120,7 +120,7 @@ const ChannelMap = (prop) => {
 ChannelMap.propType = {
   electrodeGroupId: PropTypes.number,
   nTrodeItems: PropTypes.instanceOf(Object),
-  onInput: PropTypes.func,
+  onBlur: PropTypes.func,
   updateFormData: PropTypes.func,
   onMapInput: PropTypes.func,
 };
