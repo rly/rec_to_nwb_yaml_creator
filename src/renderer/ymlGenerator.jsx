@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { number } from 'prop-types';
 import InputElement from './InputElement';
 import SelectElement from './SelectElement';
 import FileUpload from './FileUpload';
@@ -104,7 +105,7 @@ export function YMLGenerator() {
     let inputValue = '';
 
     if (!isCommaSeparatedStringToNumber) {
-      inputValue = type === 'number' ? parseInt(value, 10) : value;
+      inputValue = type === 'number' ? parseFloat(value, 10) : value;
     } else {
       inputValue = commaSeparatedStringToNumber(value);
     }
@@ -133,9 +134,10 @@ export function YMLGenerator() {
   const itemSelected = (e, metaData) => {
     const { target } = e;
     const { name, value } = target;
-    const { key, index } = metaData || {};
+    const { key, index, type } = metaData || {};
+    const inputValue = type === 'number' ? parseInt(value, 10) : value;
 
-    updateFormData(name, value, key, index);
+    updateFormData(name, inputValue, key, index);
   };
 
   const itemFileUpload = (e, value, metaData) => {
@@ -412,6 +414,7 @@ export function YMLGenerator() {
             name="institution"
             title="Institution"
             defaultValue={formData.institution}
+            required
             dataItems={labs()}
             onChange={(e) => itemSelected(e)}
           />
@@ -422,6 +425,7 @@ export function YMLGenerator() {
           name="experiment_description"
           title="Experiment Description"
           placeholder="Description of experiment"
+          required
           defaultValue={formData.experiment_description}
           onBlur={(e) => onBlur(e)}
         />
@@ -430,7 +434,8 @@ export function YMLGenerator() {
           type="text"
           name="session_description"
           title="Session Description"
-          placeholder="Desscription of current session"
+          required
+          placeholder="Description of current session"
           defaultValue={formData.session_description}
           onBlur={(e) => onBlur(e)}
         />
@@ -803,6 +808,7 @@ export function YMLGenerator() {
                 name="analog"
                 title="Analog"
                 placeholder="Analog"
+                required
                 defaultValue={formData.units.analog}
                 onBlur={(e) => onBlur(e, { key: 'units' })}
               />
@@ -812,6 +818,7 @@ export function YMLGenerator() {
                 name="behavioral_events"
                 title="Behavioral Events"
                 placeholder="Behavioral Events"
+                required
                 defaultValue={formData.units.behavioral_events}
                 onBlur={(e) => onBlur(e, { key: 'units' })}
               />
@@ -1002,7 +1009,13 @@ export function YMLGenerator() {
                           placeholder="Camera Id"
                           defaultValue={associatedVideoFiles.camera_id}
                           dataItems={cameraIdsDefined}
-                          onChange={(e) => itemSelected(e)}
+                          onChange={(e) =>
+                            itemSelected(e, {
+                              type: 'number',
+                              key,
+                              index,
+                            })
+                          }
                         />
                       </div>
                     </fieldset>

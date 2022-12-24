@@ -5,13 +5,21 @@ import { sanitizeTitle } from './utils';
 /**
  * Provides an extended select tag for selection one option from a list
  *
- * @param {Object} prop Custom elemet's properties
+ * @param {Object} prop Custom element's properties
  *
  * @returns Virtual DOM wrapping an HTML select tag and supporting markup and code
  */
 const SelectElement = (prop) => {
-  const { id, name, title, dataItems, defaultValue, onChange, addBlankOption } =
-    prop;
+  const {
+    id,
+    name,
+    type,
+    title,
+    dataItems,
+    defaultValue,
+    onChange,
+    addBlankOption,
+  } = prop;
 
   return (
     <label className="container" htmlFor={id}>
@@ -23,15 +31,24 @@ const SelectElement = (prop) => {
               &nbsp;
             </option>
           ) : null}
-          {dataItems.map((dataItem) => {
+          {['', dataItems].flat().map((dataItem, dataItemIndex) => {
+            const dataItemValue =
+              type === 'number' && dataItem !== ''
+                ? parseInt(dataItem, 10)
+                : dataItem;
+            const keyOption =
+              dataItemValue !== ''
+                ? `${dataItem}-${sanitizeTitle(dataItem)}`
+                : `${title}-0-selectItem-${dataItemIndex}`;
+
             return (
               <option
-                key={`${dataItem}-${sanitizeTitle(dataItem)}`}
+                key={keyOption}
                 value={dataItem}
                 name={name}
                 selected={dataItem === defaultValue}
               >
-                {dataItem}
+                {dataItemValue}
               </option>
             );
           })}
@@ -55,6 +72,7 @@ SelectElement.propType = {
 SelectElement.defaultProps = {
   defaultValue: '',
   addBlankOption: false,
+  type: 'text',
   onChange: () => {},
 };
 

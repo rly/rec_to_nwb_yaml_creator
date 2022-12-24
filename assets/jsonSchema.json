@@ -486,6 +486,7 @@
       "title": "associated_files",
       "type": "array",
       "default": [],
+      "minItems": 1,
       "items": {
         "$id": "#root/associated_files/items",
         "title": "Items",
@@ -570,7 +571,8 @@
       "title": "times_period_multiplier",
       "type": "number",
       "examples": [1.5],
-      "default": 0.0
+      "default": 0.0,
+      "pattern": "^\\d+$"
     },
     "raw_data_to_volts": {
       "$id": "#root/raw_data_to_volts",
@@ -592,6 +594,7 @@
       "title": "cameras",
       "type": "array",
       "default": [],
+      "minItems": 1,
       "items": {
         "$id": "#root/cameras/items",
         "title": "Items",
@@ -665,6 +668,7 @@
       "title": "tasks",
       "type": "array",
       "default": [],
+      "minItems": 1,
       "items": {
         "$id": "#root/tasks/items",
         "title": "items",
@@ -772,6 +776,7 @@
       "$id": "#root/behavioral_events",
       "title": "behavioral_events",
       "type": "array",
+      "maxItems": 1,
       "default": [],
       "items": {
         "$id": "#root/behavioral_events/items",
@@ -820,6 +825,7 @@
       "title": "electrode_groups",
       "type": "array",
       "default": [],
+      "minItems": 1,
       "items": {
         "$id": "#root/electrode_groups/items",
         "title": "Items",
@@ -1552,6 +1558,7 @@
       "title": "ntrode_electrode_group_channel_map",
       "type": "array",
       "default": [],
+      "minItems": 1,
       "items": {
         "$id": "#root/ntrode_electrode_group_channel_map/items",
         "title": "Items",

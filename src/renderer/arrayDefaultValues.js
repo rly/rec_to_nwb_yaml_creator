@@ -46,7 +46,7 @@ const arrayDefaultValues = {
     targeted_x: '',
     targeted_y: '',
     targeted_z: '',
-    units: 'μm',
+    units: 'mm',
   },
   ntrode_electrode_group_channel_map: {
     ntrode_id: 1,
