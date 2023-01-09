@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { number } from 'prop-types';
 import InputElement from './InputElement';
 import SelectElement from './SelectElement';
 import FileUpload from './FileUpload';
@@ -259,12 +258,12 @@ export function YMLGenerator() {
     const userFriendlyMessage = sanitizeMessage(message);
 
     // setCustomValidity is only supported on input tags
-    if (element.tagName === 'INPUT') {
+    if (element?.tagName === 'INPUT') {
       showCustomValidityError(element, userFriendlyMessage);
       return;
     }
 
-    if (element && element.focus) {
+    if (element?.focus) {
       element.focus();
     }
 
@@ -425,7 +424,6 @@ export function YMLGenerator() {
           name="experiment_description"
           title="Experiment Description"
           placeholder="Description of experiment"
-          required
           defaultValue={formData.experiment_description}
           onBlur={(e) => onBlur(e)}
         />
@@ -434,7 +432,6 @@ export function YMLGenerator() {
           type="text"
           name="session_description"
           title="Session Description"
-          required
           placeholder="Description of current session"
           defaultValue={formData.session_description}
           onBlur={(e) => onBlur(e)}
@@ -614,7 +611,6 @@ export function YMLGenerator() {
                         type="text"
                         name="task_name"
                         title="Task Name"
-                        required
                         defaultValue={tasks.task_name}
                         placeholder="Task Name"
                         onBlur={(e) =>
@@ -629,7 +625,6 @@ export function YMLGenerator() {
                         type="text"
                         name="task_description"
                         title="Task Description"
-                        required
                         defaultValue={tasks.task_description}
                         placeholder="Task Description"
                         onBlur={(e) =>
@@ -659,7 +654,6 @@ export function YMLGenerator() {
                         name="camera_id"
                         title="Camera Id"
                         objectKind="Camera"
-                        required
                         defaultValue={tasks.camera_id}
                         placeholder="Camera ids"
                         dataItems={cameraIdsDefined}
@@ -677,7 +671,6 @@ export function YMLGenerator() {
                         type="text"
                         name="task_epochs"
                         title="Task Epochs"
-                        required
                         defaultValue={tasks.task_epochs}
                         placeholder="Task Epochs"
                         onBlur={(e) =>
@@ -723,7 +716,6 @@ export function YMLGenerator() {
                         type="text"
                         name="name"
                         title="Name"
-                        required
                         defaultValue={associatedFilesName.name}
                         placeholder="File name"
                         onBlur={(e) =>
@@ -738,7 +730,6 @@ export function YMLGenerator() {
                         type="text"
                         name="description"
                         title="Description"
-                        required
                         defaultValue={associatedFilesName.description}
                         placeholder="description"
                         onBlur={(e) =>
@@ -772,7 +763,6 @@ export function YMLGenerator() {
                         name="task_epochs"
                         title="Task Epochs"
                         objectKind="Task"
-                        required
                         defaultValue={associatedFilesName.task_epochs}
                         placeholder="Task Epochs"
                         dataItems={taskEpochsDefined}
@@ -808,7 +798,6 @@ export function YMLGenerator() {
                 name="analog"
                 title="Analog"
                 placeholder="Analog"
-                required
                 defaultValue={formData.units.analog}
                 onBlur={(e) => onBlur(e, { key: 'units' })}
               />
@@ -818,7 +807,6 @@ export function YMLGenerator() {
                 name="behavioral_events"
                 title="Behavioral Events"
                 placeholder="Behavioral Events"
-                required
                 defaultValue={formData.units.behavioral_events}
                 onBlur={(e) => onBlur(e, { key: 'units' })}
               />
@@ -874,7 +862,6 @@ export function YMLGenerator() {
                         type="number"
                         name="id"
                         title="Id"
-                        required
                         defaultValue={cameras.id}
                         placeholder="Id"
                         onBlur={(e) =>
@@ -890,7 +877,6 @@ export function YMLGenerator() {
                         name="meters_per_pixel"
                         title="Meters Per Pixel"
                         defaultValue={cameras.meters_per_pixel}
-                        required
                         placeholder="Meters Per Pixel"
                         onBlur={(e) =>
                           onBlur(e, {
@@ -989,8 +975,8 @@ export function YMLGenerator() {
                           id={`associated_video_files-name-${index}`}
                           type="text"
                           name="name"
-                          title="Name"
                           required
+                          title="Name"
                           defaultValue={associatedVideoFiles.name}
                           placeholder="name"
                           onBlur={(e) =>
@@ -1005,8 +991,8 @@ export function YMLGenerator() {
                           type="number"
                           name="camera_id"
                           title="Camera Id"
-                          required
                           placeholder="Camera Id"
+                          required
                           defaultValue={associatedVideoFiles.camera_id}
                           dataItems={cameraIdsDefined}
                           onChange={(e) =>
@@ -1054,7 +1040,6 @@ export function YMLGenerator() {
                         name="description"
                         title="Description"
                         items={behavioralEventsDescription()}
-                        required
                         defaultValue={behavioralEvents.description}
                         placeholder="description"
                         metaData={{
@@ -1120,7 +1105,6 @@ export function YMLGenerator() {
                         type="number"
                         name="id"
                         title="Id"
-                        required
                         defaultValue={electrodeGroup.id}
                         placeholder="Id"
                         onBlur={(e) =>
@@ -1161,7 +1145,6 @@ export function YMLGenerator() {
                         type="text"
                         name="description"
                         title="Description"
-                        required
                         defaultValue={electrodeGroup.description}
                         placeholder="Description"
                         onBlur={(e) =>
@@ -1189,7 +1172,6 @@ export function YMLGenerator() {
                         type="number"
                         name="targeted_x"
                         title="Targeted x"
-                        required
                         defaultValue={electrodeGroup.targeted_x}
                         placeholder="Targeted x"
                         onBlur={(e) =>
@@ -1204,7 +1186,6 @@ export function YMLGenerator() {
                         type="number"
                         name="targeted_y"
                         title="Targeted y"
-                        required
                         defaultValue={electrodeGroup.targeted_y}
                         placeholder="Targeted y"
                         onBlur={(e) =>
@@ -1219,7 +1200,6 @@ export function YMLGenerator() {
                         type="number"
                         name="targeted_z"
                         title="Targeted z"
-                        required
                         defaultValue={electrodeGroup.targeted_z}
                         placeholder="Targeted z"
                         onBlur={(e) =>

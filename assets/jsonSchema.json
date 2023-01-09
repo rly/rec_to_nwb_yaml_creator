@@ -4,7 +4,7 @@
   "$id": "https://example.com/object1663697007.json",
   "title": "Root",
   "type": "object",
-  "required": ["experimenter_name", "lab"],
+  "required": ["experimenter_name", "lab", "institution", "data_acq_device", "times_period_multiplier", "raw_data_to_volts"],
   "properties": {
     "experimenter_name": {
       "$id": "#root/experimenter_name",
@@ -486,7 +486,6 @@
       "title": "associated_files",
       "type": "array",
       "default": [],
-      "minItems": 1,
       "items": {
         "$id": "#root/associated_files/items",
         "title": "Items",
@@ -594,7 +593,6 @@
       "title": "cameras",
       "type": "array",
       "default": [],
-      "minItems": 1,
       "items": {
         "$id": "#root/cameras/items",
         "title": "Items",
@@ -668,7 +666,6 @@
       "title": "tasks",
       "type": "array",
       "default": [],
-      "minItems": 1,
       "items": {
         "$id": "#root/tasks/items",
         "title": "items",
@@ -825,7 +822,6 @@
       "title": "electrode_groups",
       "type": "array",
       "default": [],
-      "minItems": 1,
       "items": {
         "$id": "#root/electrode_groups/items",
         "title": "Items",
@@ -1558,7 +1554,6 @@
       "title": "ntrode_electrode_group_channel_map",
       "type": "array",
       "default": [],
-      "minItems": 1,
       "items": {
         "$id": "#root/ntrode_electrode_group_channel_map/items",
         "title": "Items",
