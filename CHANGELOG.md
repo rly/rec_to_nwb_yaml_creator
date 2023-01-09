@@ -1,8 +1,6 @@
-# 0.8.0 (2015.5.27)
-- Prototype
+# 1.0.0 (2023.1.8)
+- Initial Release
 
 #### Features
 
-- **Webpack:** babel, react-hot, ...
-- **Flux:** actions, api, components, containers, stores..
-- **Package:** darwin (osx), linux and win32 (windows) platform.
+- **Initial Release:** Initial features

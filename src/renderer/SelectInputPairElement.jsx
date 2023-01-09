@@ -20,7 +20,7 @@ const SelectInputPairElement = (prop) => {
     defaultValue,
     required,
     metaData,
-    onInput,
+    onBlur,
     readOnly,
   } = prop;
 
@@ -40,7 +40,7 @@ const SelectInputPairElement = (prop) => {
       },
     };
 
-    onInput(eventData, metaData);
+    onBlur(eventData, metaData);
   };
 
   return (
@@ -53,7 +53,7 @@ const SelectInputPairElement = (prop) => {
               <select
                 name={name}
                 id={`${id}-list`}
-                onInput={onSelectPairInput}
+                onBlur={onSelectPairInput}
                 ref={selectRef}
               >
                 {items.map((item) => {
@@ -80,7 +80,7 @@ const SelectInputPairElement = (prop) => {
                 defaultValue={splittedTextNumber.number}
                 required={required}
                 readOnly={readOnly}
-                onInput={onSelectPairInput}
+                onBlur={onSelectPairInput}
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ SelectInputPairElement.propType = {
   step: PropTypes.string,
   metaData: PropTypes.instanceOf(Object),
   defaultValue: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
-  onInput: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 SelectInputPairElement.defaultProps = {
@@ -113,7 +113,7 @@ SelectInputPairElement.defaultProps = {
   readOnly: false,
   step: 'any',
   type: 'text',
-  onInput: () => {},
+  onBlur: () => {},
 };
 
 export default SelectInputPairElement;

@@ -18,7 +18,7 @@ const InputElement = (prop) => {
     placeholder,
     defaultValue,
     required,
-    onInput,
+    onBlur,
     readOnly,
     step,
   } = prop;
@@ -38,7 +38,7 @@ const InputElement = (prop) => {
             required={required}
             readOnly={readOnly}
             step={step}
-            onInput={(e) => onInput(e)}
+            onBlur={(e) => onBlur(e)}
           />
         </div>
       </label>
@@ -56,7 +56,7 @@ InputElement.propType = {
   required: PropTypes.bool,
   step: PropTypes.string,
   defaultValue: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
-  onInput: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 InputElement.defaultProps = {
@@ -65,7 +65,7 @@ InputElement.defaultProps = {
   defaultValue: '',
   readOnly: false,
   step: 'any',
-  onInput: () => {},
+  onBlur: () => {},
 };
 
 export default InputElement;

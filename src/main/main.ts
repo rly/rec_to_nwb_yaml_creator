@@ -67,7 +67,7 @@ ipcMain.on('SAVE_USER_DATA', async (event, userData) => {
   dialog
     .showSaveDialog({
       title: 'Save YAML File',
-      defaultPath: path.join(Os.homedir(), 'data.yml'),
+      defaultPath: path.join(Os.homedir(), 'metaData.yml'),
       buttonLabel: 'Save As',
       filters: [{ name: 'YAML' }, { extension: ['yaml', 'yml'] }],
       properties: [],

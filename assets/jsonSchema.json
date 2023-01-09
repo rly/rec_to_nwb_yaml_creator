@@ -4,7 +4,7 @@
   "$id": "https://example.com/object1663697007.json",
   "title": "Root",
   "type": "object",
-  "required": ["experimenter_name", "lab"],
+  "required": ["experimenter_name", "lab", "institution", "data_acq_device", "times_period_multiplier", "raw_data_to_volts"],
   "properties": {
     "experimenter_name": {
       "$id": "#root/experimenter_name",
@@ -433,6 +433,7 @@
       "$id": "#root/data_acq_device",
       "title": "data_acq_device",
       "type": "array",
+      "minItems": 1,
       "default": [],
       "items": {
         "$id": "#root/data_acq_device/items",
@@ -569,7 +570,8 @@
       "title": "times_period_multiplier",
       "type": "number",
       "examples": [1.5],
-      "default": 0.0
+      "default": 0.0,
+      "pattern": "^\\d+$"
     },
     "raw_data_to_volts": {
       "$id": "#root/raw_data_to_volts",
@@ -771,6 +773,7 @@
       "$id": "#root/behavioral_events",
       "title": "behavioral_events",
       "type": "array",
+      "maxItems": 1,
       "default": [],
       "items": {
         "$id": "#root/behavioral_events/items",
