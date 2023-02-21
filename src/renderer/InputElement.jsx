@@ -36,7 +36,8 @@ const InputElement = (prop) => {
             name={name}
             className="base-width"
             placeholder={placeholder}
-            value={defaultValue}
+            defaultValue={defaultValue}
+            key={defaultValue}
             required={required}
             readOnly={readOnly}
             step={step}
