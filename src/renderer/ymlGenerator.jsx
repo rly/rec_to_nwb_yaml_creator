@@ -38,6 +38,7 @@ import {
   dataAcqDeviceAmplifier,
   dataAcqDeviceADCCircuit,
   cameraManufacturers,
+  genders,
 } from './valueList';
 
 const Ajv = require('ajv');
@@ -541,8 +542,9 @@ export function YMLGenerator() {
     const form = structuredClone(formData);
 
     const validation = jsonchemaValidation(form);
-    const { isValid, jsonSchemaErrors } = validation;
-    const { isFormValid, formErrors } = rulesValidation(form);
+    const { isValid, jsonSchemaErrors, jsonSchemaErrorMessages } = validation;
+    const { isFormValid, formErrors, formErrorMessages } =
+      rulesValidation(form);
 
     if (isValid && isFormValid) {
       ipcRenderer.sendMessage('SAVE_USER_DATA', form);
@@ -550,14 +552,16 @@ export function YMLGenerator() {
     }
 
     if (!isValid) {
-      jsonSchemaErrors?.forEach((error) => {
-        showErrorMessage(error);
+      jsonSchemaErrorMessages?.forEach((error) => {
+        window.alert(error);
+        // showErrorMessage(error);
       });
     }
 
-    if (isFormValid) {
-      formErrors?.forEach((error) => {
-        displayErrorOnUI(error.id, error.message);
+    if (!isFormValid) {
+      formErrorMessages?.forEach((error) => {
+        window.alert(error);
+        // displayErrorOnUI(error.id, error.message);
       });
     }
   };
@@ -733,7 +737,25 @@ export function YMLGenerator() {
   useMount(() => {
     ipcRenderer.on(ASYNC_TOPICS.templateFileRead, (jsonFileContent) => {
       const JSONschema = schema.current;
-      const validation = jsonchemaValidation(jsonFileContent, JSONschema);
+      const jsonFileContentCloned = structuredClone(jsonFileContent);
+
+      // TODO: Fix this
+      // sanitize sex. Reconsider this in a future release
+      const sexValue = (jsonFileContentCloned.subject.sex || '')
+        .toUpperCase()
+        .trim();
+
+      if (['MALE', 'M'].includes(sexValue)) {
+        jsonFileContentCloned.subject.sex = 'M';
+      } else if (['FEMALE', 'F'].includes(sexValue)) {
+        jsonFileContentCloned.subject.sex = 'F';
+      } else if (['OTHER', 'O'].includes(sexValue)) {
+        jsonFileContentCloned.subject.sex = 'O';
+      } else {
+        jsonFileContentCloned.subject.sex = 'U';
+      }
+
+      const validation = jsonchemaValidation(jsonFileContentCloned, JSONschema);
       const {
         isValid,
         jsonSchemaErrorMessages,
@@ -741,20 +763,28 @@ export function YMLGenerator() {
         jsonSchemaErrorIds,
       } = validation;
       const { isFormValid, formErrorMessages, formErrors, formErrorIds } =
-        rulesValidation(jsonFileContent);
+        rulesValidation(jsonFileContentCloned);
 
       if (isValid && isFormValid) {
-        setFormData(structuredClone(jsonFileContent));
+        setFormData(structuredClone(jsonFileContentCloned));
         return null;
       }
 
       const allErrorIds = [...jsonSchemaErrorIds, ...formErrorIds];
       const pageContent = structuredClone(emptyFormData);
-      const pageContentKeys = Object.keys(pageContent);
+      const jsonFileContentClonedKeys = Object.keys(jsonFileContentCloned);
 
-      pageContentKeys.forEach((key) => {
-        if (!allErrorIds.includes(key) && Object.hasOwn(jsonFileContent, key)) {
-          pageContent[key] = structuredClone(jsonFileContent[key]);
+      jsonFileContentClonedKeys.forEach((key) => {
+        // sanitized key is used to deal with space between words, in the keys
+        // it does not apply to pageContent as its keys are properly formatted
+        const sanitizedKey = key.trim().replaceAll(' ', '_');
+        if (
+          !allErrorIds.includes(sanitizedKey) &&
+          Object.hasOwn(pageContent, sanitizedKey)
+        ) {
+          pageContent[sanitizedKey] = structuredClone(
+            jsonFileContentCloned[key]
+          );
         }
       });
 
