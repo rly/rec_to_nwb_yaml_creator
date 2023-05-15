@@ -21,6 +21,7 @@ const ListElement = (prop) => {
     required,
     inputPlaceholder,
     updateFormData,
+    step,
     readOnly,
   } = prop;
 
@@ -77,6 +78,7 @@ const ListElement = (prop) => {
               placeholder={`Type ${title}`}
               ref={valueToAdd}
               required={required}
+              step={step}
               onKeyPress={e => addListItemViaEnterKey(e, valueToAdd)}
             />
             <button type="button" className="add-button" onClick={(e)=> addListItem(e, valueToAdd)}>&#43;</button>
@@ -97,6 +99,7 @@ ListElement.propType = {
   readOnly: PropTypes.bool,
   inputPlaceholder: PropTypes.string,
   metaData: PropTypes.oneOf([PropTypes.object]),
+  step: PropTypes.string,
   updateFormData: PropTypes.func,
   defaultValue: PropTypes.arrayOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -109,6 +112,7 @@ ListElement.defaultProps = {
   readOnly: false,
   metaData: {},
   inputPlaceholder: '',
+  step: 'any',
   required: false,
 };
 

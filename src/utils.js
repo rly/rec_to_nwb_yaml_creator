@@ -9,15 +9,6 @@ import { useEffect } from 'react';
 // eslint-disable-next-line react-hooks/exhaustive-deps
 export const useMount = (fn) => useEffect(fn, []);
 
-/**
- * Object storing event topics' names
- */
-export const ASYNC_TOPICS = {
-  jsonFileRead: 'RESPONSE_AFTER_READING_OF_JSON_SCHEMA_FILE',
-  cameraIdsUpdated: 'CAMERA_ID_EITHER_ADDED_OR_DELETED',
-  templateFileRead: 'RESPONSE_OPEN_TEMPLATE_FILE_BOX',
-};
-
 /** Checks if value is an integer */
 export const isInteger = (value) => {
   return /^\d+$/.test(value);

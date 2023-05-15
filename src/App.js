@@ -18,7 +18,6 @@ import CheckboxList from './element/CheckboxList';
 import RadioList from './element/RadioList';
 import ListElement from './element/ListElement';
 import {
-  ASYNC_TOPICS,
   commaSeparatedStringToNumber,
   formatCommaSeparatedString,
   sanitizeTitle,
@@ -814,6 +813,7 @@ useEffect(() => {
     </div>
     <div className="page-container">
       <div className="page-container__nav">
+        <div className="page-container__nav__content">
         <p className="page-container__nav--content__header">Navigation</p>
         <ul>
         {Object.keys(defaultYMLValues)
@@ -853,6 +853,7 @@ useEffect(() => {
             </li>
           ))}
       </ul>
+      </div>
       </div>
       <div className="page-container__content">
       <h2 className="header-text">
@@ -1365,7 +1366,8 @@ useEffect(() => {
                     />
                     <ListElement
                     id={`tasks-task_epochs-${index}`}
-                                type="text"
+                                type="number"
+                                step="1"
                                 name="task_epochs"
                                 title="Task Epochs"
                                 defaultValue={tasks.task_epochs}
